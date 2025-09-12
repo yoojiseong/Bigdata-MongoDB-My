@@ -176,3 +176,21 @@ db.users.find({ points: { $exists: true } });
 // ✅ 20. orders 배열의 크기가 5 이상인 사용자 찾기
 
 db.users.find({ orders: { $size: 5 } });
+
+
+// 커서 예시.
+db.users.find({ score: { $gte: 80 } }).forEach(function (user) {
+  print("Name: " + user.name + ", Score: " + user.score);
+});
+
+// 2
+// 'active' 상태인 사용자를 찾는 커서를 생성합니다.
+const activeUsersCursor = db.users.find({ status: "active" });
+
+let count = 0;
+// 커서에 다음 문서가 있고, 카운트가 2보다 작은 동안 반복합니다.
+while (activeUsersCursor.hasNext() && count < 2) {
+  const user = activeUsersCursor.next(); // 다음 문서를 가져옵니다.
+  printjson(user);
+  count++;
+}
